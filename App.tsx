@@ -10,12 +10,13 @@ import {
   Text,
   View,
 } from 'react-native';
+import LandingScreen from './src/screens/LandingScreen';
 
 
 function App(): JSX.Element {
   return (
     <View>
-      <Text>First Commitment</Text>
+      <LandingScreen />
     </View>
   );
 }
