@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Dimensions, Image, SafeAreaView, ScrollView, Text, Touchable, TouchableOpacity, View } from "react-native";
 import styles from "./styles";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { fetchWeatherFav } from "../../features/weather/weatherSlice";
+import { fetchWeatherFav, removeFavourites } from "../../features/weather/weatherSlice";
 import axios from "axios";
 import Carousel from 'react-native-snap-carousel';
 
@@ -10,6 +10,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Appbar } from "react-native-paper";
 
 import moment from "moment";
+import { WeatherData } from "../../types";
+import Toast from "react-native-toast-message";
 
 const FavouritesScreen: React.FC = () => {
 
@@ -19,6 +21,8 @@ const FavouritesScreen: React.FC = () => {
     const [placePhotos, setPlacePhotos] = useState<string[]>([]);
     const [weatherIcon, setWeatherIcon] = useState('');
     const [loading, setLoading] = useState(true);
+    const [deleting, setDeleting] = useState(false);
+
 
     const { width } = Dimensions.get('window');
 
@@ -66,7 +70,7 @@ const FavouritesScreen: React.FC = () => {
         selector.weather.favs.map(weatherData => {
             console.log('weatherData check: ', weatherData)
         })
-    }, []);
+    }, [dispatch]);
 
     const apiKey = 'AIzaSyDNtoaUMsq6263o_EKgAUtVfgUwhX4T3hk';
 
@@ -116,8 +120,31 @@ const FavouritesScreen: React.FC = () => {
             });
     };
 
-    const handleRemoveFav = (weatherData: any) => {
-        console.log('Hello from', weatherData)
+    const handleRemoveFav = async (weatherData: WeatherData) => {
+        // console.log('Hello from', weatherData.id)
+        // await dispatch(removeFavourites(weatherData.id))
+
+        setDeleting(true); // Show the delete loader
+
+        try {
+            await dispatch(removeFavourites(weatherData.id)).then(() => {
+                showToast()
+            });
+            // If deletion is successful, the loader will be hidden in the .then block
+        } catch (error) {
+            console.error('Error removing favorite item:', error);
+        } finally {
+            setDeleting(false); // Hide the delete loader whether deletion was successful or not
+        }
+    };
+
+    const showToast = () => {
+        Toast.show({
+            type: 'success',
+            text1: 'Favourites',
+            text2: 'Removed from your favorites list',
+            visibilityTime: 3000,
+        });
     };
 
     const renderItem = ({ item, index }: any) => {
@@ -139,7 +166,9 @@ const FavouritesScreen: React.FC = () => {
 
             {loading ? <View style={{ justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                 <ActivityIndicator size="large" color="blue" />
-            </View> :
+            </View> : deleting ? (
+                <ActivityIndicator size="large" color="blue" /> // Show the delete loader
+            ) :
                 selector.weather.favs.length > 0 ? <View style={styles.container}>
 
                     <ScrollView>
@@ -165,8 +194,11 @@ const FavouritesScreen: React.FC = () => {
                                     </View>
                                     <Text style={{ fontSize: 40, }}>{(weatherData.temp).toFixed(0)}℃</Text>
                                     <View>
-                                        <TouchableOpacity style={styles.favButton} onPress={() => handleRemoveFav(weatherData)}>
+                                        {/* <TouchableOpacity style={styles.favButton} onPress={() => handleRemoveFav(weatherData)}>
                                             <AntDesign name="customerservice" size={25} color={'black'} />
+                                        </TouchableOpacity> */}
+                                        <TouchableOpacity style={styles.favBtns} onPress={() => handleRemoveFav(weatherData)}>
+                                            <Image source={require('../../assets/Icons/removed.png')} style={{ height: 30, width: 30, }} />
                                         </TouchableOpacity>
                                     </View>
                                 </View>

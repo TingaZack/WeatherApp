@@ -35,5 +35,19 @@ const styles = StyleSheet.create({
     padding: 20,
     margin: 10,
   },
+  favBtns: {
+    shadowColor: '#d3d3d3', // IOS
+    shadowOffset: {height: 0, width: 0}, // IOS
+    shadowOpacity: 1, // IOS
+    shadowRadius: 1, //IOS
+    elevation: 2, // Android
+    width: 50,
+    // marginLeft: 16,
+    height: 50,
+    // backgroundColor: 'white',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 export default styles;

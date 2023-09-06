@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   },
   weatherContainer: {
     flex: 3,
-    backgroundColor: '#54717A',
+    // backgroundColor: '#54717A',
   },
   weatherTemp: {
     position: 'absolute',
@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
   listItemsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 16,
   },
   p: {
@@ -52,14 +53,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // width: 200,
   },
-  listItemsDay: {},
-  listItemsTime: {},
-  weatherDetail: {},
-  detailText: {},
-  btnContainer: {},
-  btnText: {},
   favBtns: {
-    shadowColor: 'grey', // IOS
+    shadowColor: '#d3d3d3', // IOS
     shadowOffset: {height: 1, width: 1}, // IOS
     shadowOpacity: 1, // IOS
     shadowRadius: 1, //IOS
@@ -73,6 +68,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  lastUpdatedText: {
+    color: 'white',
+    position: 'absolute',
+    bottom: 8,
+    right: 16,
+  },
+  weatherIcon: {
+    height: 30,
+    width: 30,
+  },
+  favIcon: {
+    width: 30,
+    height: 30,
+  }
 });
 
 export default styles;
