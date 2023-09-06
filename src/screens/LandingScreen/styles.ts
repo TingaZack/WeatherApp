@@ -41,7 +41,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
     textAlign: 'center',
-  }
+  },
+  favourites: {
+    backgroundColor: 'whitesmoke',
+    position: 'absolute',
+    height: 50,
+    borderRadius: 100,
+    top: 55,
+    right: 16,
+    flexDirection: 'row',
+    // width: 200,
+  },
+  listItemsDay: {},
+  listItemsTime: {},
+  weatherDetail: {},
+  detailText: {},
+  btnContainer: {},
+  btnText: {},
+  favBtns: {
+    shadowColor: 'grey', // IOS
+    shadowOffset: {height: 1, width: 1}, // IOS
+    shadowOpacity: 1, // IOS
+    shadowRadius: 1, //IOS
+    backgroundColor: '#fff',
+    elevation: 1, // Android
+    width: 50,
+    // marginLeft: 16,
+    height: 50,
+    // backgroundColor: 'white',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default styles;
