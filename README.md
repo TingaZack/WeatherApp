@@ -1,17 +1,17 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Weather App
 
-# Getting Started
+This is a React Native weather app that provides current weather conditions and a 5-day forecast for your location.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Getting Started
 
-## Step 1: Start the Metro Server
+Before running the app, make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions.
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+### Step 1: Start the Metro Server
 
-To start Metro, run the following command from the _root_ of your React Native project:
+First, start Metro, the JavaScript bundler that ships with React Native. Open a terminal in your project's root directory and run:
 
 ```bash
-# using npm
+# Using npm
 npm start
 
 # OR using Yarn
@@ -48,16 +48,32 @@ This is one way to run your app — you can also run it directly from within And
 
 ## Step 3: Modifying your App
 
-Now that you have successfully run the app, let's modify it.
+Now that you have successfully run the app, you should see the weather forecast if your forecast and ofcourse you're always welcome to modify it.
 
 1. Open `App.tsx` in your text editor of choice and edit some lines.
 2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
 
    For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
 
+## Configuration: Using Your Own API Keys
+1. Create a .env file in the root directory of your project if it doesn't already exist.
+2. Add your API keys to the .env file in the following format:
+```bash
+REACT_APP_WEATHER_API_KEY="openweathermap_api_key"
+REACT_APP_GOOGLE_MAPS_API_KEY="google_maps_api_key"
+```
+Replace "your_openweathermap_api_key" with your OpenWeatherMap API key, which can be obtained [here](https://home.openweathermap.org/api_keys). Similarly, replace "your_google_maps_api_key" with your Google Maps API key, ensuring that your Google Maps API key has the Google Places API enabled, which can be done [here](https://console.cloud.google.com/apis/library/places-backend.googleapis.com).
+
+3. Make sure to keep your API keys secret and do not share them in your code repositories.
+
 ## Congratulations! :tada:
 
 You've successfully run and modified your React Native App. :partying_face:
+
+## Features
+1. View current weather conditions.
+2. Check a 5-day weather forecast.
+3. Add location to your favorites.
 
 ### Now what?
 

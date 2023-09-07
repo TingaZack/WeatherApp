@@ -15,7 +15,9 @@ import {FIRESTORE_DB} from '../../../firebaseConfig';
 import { WeatherData } from '../../types';
 import moment from 'moment';
 
-const apiKey = 'AIzaSyDNtoaUMsq6263o_EKgAUtVfgUwhX4T3hk';
+import {REACT_APP_WEATHER_API_KEY, REACT_APP_GOOGLE_MAPS_API_KEY} from '@env'
+
+const apiKey = REACT_APP_GOOGLE_MAPS_API_KEY;
 
 // Async Thunks
 
@@ -23,27 +25,27 @@ export const addCityWeatherToFavourites = createAsyncThunk(
   'favourites/addCityWeatherToFavourites',
   async (favData: any) => {
     const nextDateString = new Date().toISOString().slice(0, 10);
-    console.log('Add this: ', favData.city.name + '_' + nextDateString);
+    console.log('Add this: ', favData, nextDateString);
 
-    try {
-      await setDoc(
-        doc(
-          FIRESTORE_DB,
-          'favourites',
-          favData.city.name + '_' + nextDateString,
-        ),
-        {
-          ...favData,
-          date: Timestamp.now(),
-        },
-      );
+    // try {
+    //   await setDoc(
+    //     doc(
+    //       FIRESTORE_DB,
+    //       'favourites',
+    //       favData.city.name + '_' + nextDateString,
+    //     ),
+    //     {
+    //       ...favData,
+    //       date: Timestamp.now(),
+    //     },
+    //   );
 
-      console.log('Data added to Firestore successfully');
-      return 'Data added to Firestore successfully';
-    } catch (error: any) {
-      console.log(error.message);
-      throw error;
-    }
+    //   console.log('Data added to Firestore successfully');
+    //   return 'Data added to Firestore successfully';
+    // } catch (error: any) {
+    //   console.log(error.message);
+    //   throw error;
+    // }
   },
 );
 
@@ -77,11 +79,12 @@ export const fetchWeatherFav = createAsyncThunk(
           const place_id = await getPlaceId(doc.data().city.name);
 
           if (place_id) {
+
             const placeDetails = await getMoreInfo(place_id);
+            console.log(doc.data().city);
 
             const photoReference = placeDetails.photos[0].photo_reference;
             const photoApiEndpoint = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoReference}&key=${apiKey}`;
-
             favouritesList.push({
               ...doc.data(),
               id: doc.id,
@@ -137,31 +140,32 @@ const getMoreInfo = async (place_id: any) => {
 export const fetchWeatherForecast = createAsyncThunk(
   'weather/fetchWeatherForecast',
   async (coords: any) => {
+    console.log('Fetching weather forecast: ', coords);
     try {
       const netInfo = await NetInfo.fetch();
-      let weatherData;
 
       if (netInfo.isConnected) {
         const response = await axios.get(
-          `https://api.openweathermap.org/data/2.5/forecast?lat=${coords.latitude}&lon=${coords.longitude}&units=metric&appid=2b8e99d0e8922ee7bf08de9bee198ac0`,
+          `https://api.openweathermap.org/data/2.5/forecast?lat=${coords.latitude}&lon=${coords.longitude}&units=metric&appid=${REACT_APP_WEATHER_API_KEY}`,
         );
 
-        weatherData = response.data;
+        const weatherData = response.data;
         await AsyncStorage.setItem(
           'cachedWeatherData',
           JSON.stringify(weatherData),
         );
-      } else {
-        const cachedData = await AsyncStorage.getItem('cachedWeatherData');
 
+        return weatherData;
+      } else {
+        console.log('Network is offline. Using cached data...');
+        const cachedData = await AsyncStorage.getItem('cachedWeatherData');
         if (cachedData) {
-          weatherData = JSON.parse(cachedData);
+          const weatherData = JSON.parse(cachedData);
+          return weatherData;
         } else {
           throw new Error('No cached data available.');
         }
       }
-
-      return weatherData;
     } catch (error) {
       console.error('Error fetching weather data:', error);
       throw error;
@@ -169,7 +173,45 @@ export const fetchWeatherForecast = createAsyncThunk(
   },
 );
 
-// Slice
+
+// export const fetchWeatherForecast = createAsyncThunk(
+//   'weather/fetchWeatherForecast',
+//   async (coords: any) => {
+//     console.log('Fetching weather forecast: ', coords);
+//     try {
+//       const netInfo = await NetInfo.fetch();
+//       let weatherData;
+
+//       if (netInfo.isConnected) {
+//         const response = await axios.get(
+//           `https://api.openweathermap.org/data/2.5/forecast?lat=${coords.latitude}&lon=${coords.longitude}&units=metric&appid=2b8e99d0e8922ee7bf08de9bee198ac0`,
+//         );
+
+//         weatherData = response.data;
+//         await AsyncStorage.setItem(
+//           'cachedWeatherData',
+//           JSON.stringify(weatherData),
+//         );
+//       } else {
+//         console.log('cachedData............................: ')
+//         const cachedData = await AsyncStorage.getItem('cachedWeatherData');
+//         console.log('cachedData: ', cachedData)
+//         if (cachedData) {
+//           weatherData = JSON.parse(cachedData);
+//         } else {
+//           throw new Error('No cached data available.');
+//         }
+//       }
+
+//       return weatherData;
+//     } catch (error) {
+//       console.error('Error fetching weather data:', error);
+//       throw error;
+//     }
+//   },
+// );
+
+// // Slice
 
 interface WeatherState {
   loading: boolean;
@@ -304,7 +346,7 @@ const weatherSlice = createSlice({
 
             if (weatherDate === nextDateString) {
               if (!weatherDataForNext5Days[nextDateString]) {
-                console.log('Nex Date: ', nextDateString);
+                // console.log('Nex Date: ', nextDateString);
                 weatherDataForNext5Days[nextDateString] = {
                   temperatures: [],
                   weatherMain: '',
@@ -335,26 +377,26 @@ const weatherSlice = createSlice({
         // console.log('Daily Data for the Next 5 Days:', weatherDataForNext5Days);
 
         let date = new Date();
-        AsyncStorage.setItem(
-          'cachedWeatherData',
-          JSON.stringify({
-            lastUpdated: moment(date.toDateString()).format('DD MMM YYYY hh:mm'),
-            currentWeather: Object.assign(currentWeather, {
-              city: actionPayload.city,
-            }),
-            next5Days: weatherDataForNext5Days,
-          }),
-        )
-          .then(() => {
-            console.log('Updated AsyncStorage with fetched data');
-          })
-          .catch(error => {
-            console.log(error.message);
-          });
+        // AsyncStorage.setItem(
+        //   'cachedWeatherData',
+        //   JSON.stringify({
+        //     lastUpdated: moment(date).format('DD MMM YYYY hh:mm a'),
+        //     currentWeather: Object.assign(currentWeather, {
+        //       city: actionPayload.city,
+        //     }),
+        //     next5Days: weatherDataForNext5Days,
+        //   }),
+        // )
+        //   .then(() => {
+        //     console.log('Updated AsyncStorage with fetched data');
+        //   })
+        //   .catch(error => {
+        //     console.log(error.message);
+        //   });
 
         state.loading = false;
         state.next5Days = weatherDataForNext5Days;
-        state.lastUpdated = moment(date.toDateString()).format('DD MMM YYYY hh:mm');
+        state.lastUpdated = moment(date).format('DD MMM YYYY hh:mm a');
         state.currentWeather = Object.assign(currentWeather, {
           city: actionPayload.city,
         });
