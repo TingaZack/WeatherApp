@@ -66,6 +66,7 @@ export const fetchWeatherFav = createAsyncThunk(
   async () => {
     try {
       const favouritesList: any[] = [];
+      // let coords = {latitude: 0, longitude: 0};
       const querySnapshot = await getDocs(
         collection(FIRESTORE_DB, 'favourites'),
       );
@@ -73,11 +74,11 @@ export const fetchWeatherFav = createAsyncThunk(
       await Promise.all(
         querySnapshot.docs.map(async doc => {
           const place_id = await getPlaceId(doc.data().city.name);
-
           if (place_id) {
-            const placeDetails = await getMoreInfo(place_id);
-            console.log(doc.data().city);
-
+            const placeDetails = await getMoreInfo(place_id, {
+              latitude: doc.data().city.coord.lat,
+              longitude: doc.data().city.coord.lon,
+            });
             const photoReference = placeDetails.photos[0].photo_reference;
             const photoApiEndpoint = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoReference}&key=${apiKey}`;
             favouritesList.push({
@@ -116,13 +117,13 @@ const getPlaceId = async (placeName: string) => {
   }
 };
 
-const getMoreInfo = async (place_id: any) => {
+const getMoreInfo = async (
+  place_id: any,
+  coords = {latitude: 0, longitude: 0},
+) => {
   try {
-    const latitude = -26.241585273046958; // Replace with your latitude
-    const longitude = 27.860338567886057; // Replace with your longitude
 
-    const placesDetailsApiEndpoint = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${place_id}&location=${latitude},${longitude}&key=${apiKey}`;
-
+    const placesDetailsApiEndpoint = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${place_id}&location=${coords.latitude},${coords.longitude}&key=${apiKey}`;
     const response = await axios.get(placesDetailsApiEndpoint);
     const placeDetails = response.data.result;
     return placeDetails;
