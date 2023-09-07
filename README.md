@@ -75,8 +75,12 @@ You've successfully run and modified your React Native App. :partying_face:
 2. Check a 5-day weather forecast.
 3. Add location to your favorites.
 
-### Now what?
+# Here are some screenshots of my amazing app:
+<img src="./src/assets/Screenshots/Simulator Screenshot - iPhone 14 Pro - 2023-09-07 at 06.01.17.png" alt="Screenshot 1" height="300">
+<img src="./src/assets//Screenshots/Simulator Screenshot - iPhone 14 Pro - 2023-09-07 at 20.08.47.png" alt="Screenshot 2" height="300">
+<img src="./src/assets/Screenshots/Simulator Screenshot - iPhone 14 Pro - 2023-09-07 at 21.02.23.png" alt="Screenshot 2" height="300">
 
+### Now what?
 - If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
 - If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
 

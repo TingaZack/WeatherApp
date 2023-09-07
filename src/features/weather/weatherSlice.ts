@@ -12,10 +12,10 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import {FIRESTORE_DB} from '../../../firebaseConfig';
-import { WeatherData } from '../../types';
+import {WeatherData} from '../../types';
 import moment from 'moment';
 
-import {REACT_APP_WEATHER_API_KEY, REACT_APP_GOOGLE_MAPS_API_KEY} from '@env'
+import {REACT_APP_WEATHER_API_KEY, REACT_APP_GOOGLE_MAPS_API_KEY} from '@env';
 
 const apiKey = REACT_APP_GOOGLE_MAPS_API_KEY;
 
@@ -24,28 +24,24 @@ const apiKey = REACT_APP_GOOGLE_MAPS_API_KEY;
 export const addCityWeatherToFavourites = createAsyncThunk(
   'favourites/addCityWeatherToFavourites',
   async (favData: any) => {
-    const nextDateString = new Date().toISOString().slice(0, 10);
-    console.log('Add this: ', favData, nextDateString);
+    const dateString = new Date().toISOString().slice(0, 10);
+    // console.log('Add this: ', favData, dateString);
 
-    // try {
-    //   await setDoc(
-    //     doc(
-    //       FIRESTORE_DB,
-    //       'favourites',
-    //       favData.city.name + '_' + nextDateString,
-    //     ),
-    //     {
-    //       ...favData,
-    //       date: Timestamp.now(),
-    //     },
-    //   );
+    try {
+      await setDoc(
+        doc(FIRESTORE_DB, 'favourites', favData.city.name + '_' + dateString),
+        {
+          ...favData,
+          date: Timestamp.now(),
+        },
+      );
 
-    //   console.log('Data added to Firestore successfully');
-    //   return 'Data added to Firestore successfully';
-    // } catch (error: any) {
-    //   console.log(error.message);
-    //   throw error;
-    // }
+      console.log('Data added to Firestore successfully');
+      return 'Data added to Firestore successfully';
+    } catch (error: any) {
+      console.log(error.message);
+      throw error;
+    }
   },
 );
 
@@ -79,7 +75,6 @@ export const fetchWeatherFav = createAsyncThunk(
           const place_id = await getPlaceId(doc.data().city.name);
 
           if (place_id) {
-
             const placeDetails = await getMoreInfo(place_id);
             console.log(doc.data().city);
 
@@ -139,7 +134,7 @@ const getMoreInfo = async (place_id: any) => {
 
 export const fetchWeatherForecast = createAsyncThunk(
   'weather/fetchWeatherForecast',
-  async (coords: any) => {
+  async (coords: any, {rejectWithValue}) => {
     console.log('Fetching weather forecast: ', coords);
     try {
       const netInfo = await NetInfo.fetch();
@@ -163,16 +158,15 @@ export const fetchWeatherForecast = createAsyncThunk(
           const weatherData = JSON.parse(cachedData);
           return weatherData;
         } else {
-          throw new Error('No cached data available.');
+          return rejectWithValue('No cached data available.');
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching weather data:', error);
-      throw error;
+      return rejectWithValue(error.message);
     }
   },
 );
-
 
 // export const fetchWeatherForecast = createAsyncThunk(
 //   'weather/fetchWeatherForecast',

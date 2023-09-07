@@ -187,32 +187,37 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
 
                         <ScrollView>
                             {Object.values(selector.weather.next5Days).map((weather: any) => (
-                                <View style={styles.listItemsContainer} key={weather.date}>
-                                    <Text style={[styles.p, { flex: 1, textAlign: "left" }]}>
-                                        {dayOfTheWeek(weather.date)}
-                                    </Text>
-                                    {weather.weatherMain === "Clouds" && (
-                                        <Image
-                                            source={require("../../assets/Icons/partlysunny.png")}
-                                            style={styles.weatherIcon}
-                                        />
-                                    )}
-                                    {weather.weatherMain === "Clear" && (
-                                        <Image
-                                            source={require("../../assets/Icons/clear.png")}
-                                            style={styles.weatherIcon}
-                                        />
-                                    )}
-                                    {weather.weatherMain === "Rain" && (
-                                        <Image
-                                            source={require("../../assets/Icons/rain.png")}
-                                            style={styles.weatherIcon}
-                                        />
-                                    )}
-                                    <Text style={[styles.p, { flex: 1, textAlign: "right" }]}>
-                                        {(weather.averageTemperature).toFixed(0)}°
-                                    </Text>
-                                </View>
+                                <DaysWeatherListItem
+                                    key={weather.date}
+                                    weather={weather}
+                                    dayOfTheWeek={dayOfTheWeek}
+                                />
+                                // <View style={styles.listItemsContainer} key={weather.date}>
+                                //     <Text style={[styles.p, { flex: 1, textAlign: "left" }]}>
+                                //         {dayOfTheWeek(weather.date)}
+                                //     </Text>
+                                //     {weather.weatherMain === "Clouds" && (
+                                //         <Image
+                                //             source={require("../../assets/Icons/partlysunny.png")}
+                                //             style={styles.weatherIcon}
+                                //         />
+                                //     )}
+                                //     {weather.weatherMain === "Clear" && (
+                                //         <Image
+                                //             source={require("../../assets/Icons/clear.png")}
+                                //             style={styles.weatherIcon}
+                                //         />
+                                //     )}
+                                //     {weather.weatherMain === "Rain" && (
+                                //         <Image
+                                //             source={require("../../assets/Icons/rain.png")}
+                                //             style={styles.weatherIcon}
+                                //         />
+                                //     )}
+                                //     <Text style={[styles.p, { flex: 1, textAlign: "right" }]}>
+                                //         {(weather.averageTemperature).toFixed(0)}°
+                                //     </Text>
+                                // </View>
                             ))}
                         </ScrollView>
                     </View>
@@ -238,34 +243,34 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
         </>
     );
 };
-
+const DaysWeatherListItem: React.FC<{ weather: any; dayOfTheWeek: (date: string) => string }> = ({ weather, dayOfTheWeek }) => {
 // const DaysWeatherListItem = () => {
-//     return <View style={styles.listItemsContainer} key={weather.date}>
-//         <Text style={[styles.p, { flex: 1, textAlign: "left" }]}>
-//             {dayOfTheWeek(weather.date)}
-//         </Text>
-//         {weather.weatherMain === "Clouds" && (
-//             <Image
-//                 source={require("../../assets/Icons/partlysunny.png")}
-//                 style={styles.weatherIcon}
-//             />
-//         )}
-//         {weather.weatherMain === "Clear" && (
-//             <Image
-//                 source={require("../../assets/Icons/clear.png")}
-//                 style={styles.weatherIcon}
-//             />
-//         )}
-//         {weather.weatherMain === "Rain" && (
-//             <Image
-//                 source={require("../../assets/Icons/rain.png")}
-//                 style={styles.weatherIcon}
-//             />
-//         )}
-//         <Text style={[styles.p, { flex: 1, textAlign: "right" }]}>
-//             {(weather.averageTemperature).toFixed(0)}°
-//         </Text>
-//     </View>
-// };
+    return <View style={styles.listItemsContainer} key={weather.date}>
+        <Text style={[styles.p, { flex: 1, textAlign: "left" }]}>
+            {dayOfTheWeek(weather.date)}
+        </Text>
+        {weather.weatherMain === "Clouds" && (
+            <Image
+                source={require("../../assets/Icons/partlysunny.png")}
+                style={styles.weatherIcon}
+            />
+        )}
+        {weather.weatherMain === "Clear" && (
+            <Image
+                source={require("../../assets/Icons/clear.png")}
+                style={styles.weatherIcon}
+            />
+        )}
+        {weather.weatherMain === "Rain" && (
+            <Image
+                source={require("../../assets/Icons/rain.png")}
+                style={styles.weatherIcon}
+            />
+        )}
+        <Text style={[styles.p, { flex: 1, textAlign: "right" }]}>
+            {(weather.averageTemperature).toFixed(0)}°
+        </Text>
+    </View>
+};
 
 export default LandingScreen;
